@@ -9,7 +9,7 @@ import java.util.Scanner;
 
 public class App {
     public static void main(String[] args) {
-        System.out.println("Hello this is The Goose Game!");
+        System.out.println("Hello! This is The Goose Game!");
 
         GooseGame gooseGame = new GooseGame();
         CommandExecutor commandExecutor = new CommandExecutor(gooseGame);
@@ -29,6 +29,6 @@ public class App {
             }
         } while (continueGame);
 
-        System.out.println("Goose Game terminated, Bye!");
+        System.out.println("The Goose Game terminated, Bye!");
     }
 }

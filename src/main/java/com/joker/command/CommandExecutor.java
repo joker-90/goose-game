@@ -37,18 +37,26 @@ public class CommandExecutor {
         List<Integer> rolls = userArguments.subList(1, userArguments.size()).stream()
                 .map(Integer::parseInt)
                 .collect(Collectors.toList());
+
         Integer playerSpace = gooseGame.getPlayers().get(playerName);
-        Integer newPlayerSpace = gooseGame.movePlayer(playerName, rolls);
-        return playerName + " rolls " + rolls.stream()
+        boolean bounced = gooseGame.movePlayer(playerName, rolls);
+        Integer newPlayerSpace = gooseGame.getPlayers().get(playerName);
+
+        String rollsString = rolls.stream()
                 .map(String::valueOf)
-                .collect(Collectors.joining(", "))
-                + ". " + playerName + " moves from " + (playerSpace == 0 ? "Start" : playerSpace)
-                + " to " + newPlayerSpace;
+                .collect(Collectors.joining(", "));
+        return playerName + " rolls " + rollsString + ". " + playerName +
+                " moves from " +
+                (playerSpace == 0 ? "Start" : playerSpace) +
+                " to " + (bounced ? +GooseGame.FINAL_SPACE + ". " + playerName + " bounces! " + playerName + " returns to " + newPlayerSpace : newPlayerSpace)
+                + (gooseGame.getWinner().isPresent() ? ". " + gooseGame.getWinner().get() + " Wins!!" : "");
     }
 
     private String handleAddPlayer(List<String> userArguments) throws PlayerAlreadyExistsException {
         String playerName = userArguments.get(0);
+
         gooseGame.addPlayer(playerName);
+
         return gooseGame.getPlayers().keySet()
                 .stream()
                 .collect(Collectors.joining(", ", "players: ", ""));

@@ -26,7 +26,7 @@ public class GooseGameTest {
 
     @Test
     public void testAddPlayer() throws Exception {
-        String playerName = "Player name";
+        String playerName = "Pippo";
 
         gooseGame.addPlayer(playerName);
 
@@ -35,7 +35,7 @@ public class GooseGameTest {
 
     @Test
     public void testAddExistingPlayerThrowsException() throws Exception {
-        String playerName = "Player name";
+        String playerName = "Pippo";
 
         gooseGame.addPlayer(playerName);
 
@@ -45,11 +45,39 @@ public class GooseGameTest {
 
     @Test
     public void testMovePlayerUpdatePlayerSpace() throws Exception {
-        String playerName = "Player name";
+        String playerName = "Pippo";
         gooseGame.addPlayer(playerName);
 
-        Integer result = gooseGame.movePlayer(playerName, Arrays.asList(4, 2));
+        boolean result = gooseGame.movePlayer(playerName, Arrays.asList(4, 2));
 
-        assertThat(result, equalTo(6));
+        assertThat(result, equalTo(false));
+        assertThat(gooseGame.getPlayers().get(playerName), equalTo(6));
+        assertThat(gooseGame.getWinner().isPresent(), equalTo(false));
     }
+
+    @Test
+    public void testMovePlayerWinUpdatePlayerSpaceAndIsWinner() throws Exception {
+        String playerName = "Pippo";
+        gooseGame.addPlayer(playerName);
+
+        boolean result = gooseGame.movePlayer(playerName, Arrays.asList(60, 3));
+
+        assertThat(result, equalTo(false));
+        assertThat(gooseGame.getPlayers().get(playerName), equalTo(63));
+        assertThat(gooseGame.getWinner().isPresent(), equalTo(true));
+        assertThat(gooseGame.getWinner().get(), equalTo(playerName));
+    }
+
+    @Test
+    public void testMovePlayerOverMaxSpaceBounceAndUpdatePlayerSpace() throws Exception {
+        String playerName = "Pippo";
+        gooseGame.addPlayer(playerName);
+
+        boolean result = gooseGame.movePlayer(playerName, Arrays.asList(60, 5));
+
+        assertThat(result, equalTo(true));
+        assertThat(gooseGame.getPlayers().get(playerName), equalTo(61));
+        assertThat(gooseGame.getWinner().isPresent(), equalTo(false));
+    }
+
 }
