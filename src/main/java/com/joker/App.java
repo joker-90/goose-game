@@ -26,7 +26,6 @@ public class App {
                 continueGame = false;
             } catch (Exception e) {
                 System.out.println(e.getMessage());
-                continueGame = false;
             }
         } while (continueGame);
 

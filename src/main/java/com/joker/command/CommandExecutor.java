@@ -3,6 +3,8 @@ package com.joker.command;
 import com.joker.command.exception.CommandNotFoundException;
 import com.joker.command.exception.GameStoppedException;
 import com.joker.game.GooseGame;
+import com.joker.game.exception.PlayerAlreadyExistsException;
+import com.joker.game.exception.PlayerNotFoundException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,28 +20,37 @@ public class CommandExecutor {
     public String executeGameCommand(String userString) throws Exception {
         Command command = Command.getCommandFromString(userString);
         List<String> userArguments = command.getCommandArguments(userString);
-        String playerName = userArguments.get(0);
         switch (command) {
             case ADD_PLAYER:
-                gooseGame.addPlayer(playerName);
-                return gooseGame.getPlayers().keySet()
-                        .stream()
-                        .collect(Collectors.joining(", ", "players: ", ""));
+                return handleAddPlayer(userArguments);
             case MOVE_PLAYER:
-                List<Integer> rolls = userArguments.subList(1, userArguments.size()).stream()
-                        .map(Integer::parseInt)
-                        .collect(Collectors.toList());
-                Integer playerSpace = gooseGame.getPlayers().get(playerName);
-                Integer newPlayerSpace = gooseGame.movePlayer(playerName, rolls);
-                return playerName + " rolls " + rolls.stream()
-                        .map(String::valueOf)
-                        .collect(Collectors.joining(", "))
-                        + ". " + playerName + " moves from " + playerSpace + " to " + newPlayerSpace;
-
+                return handleMovePlayer(userArguments);
             case EXIT:
                 throw new GameStoppedException();
             default:
                 throw new CommandNotFoundException(userString);
         }
+    }
+
+    private String handleMovePlayer(List<String> userArguments) throws PlayerNotFoundException {
+        String playerName = userArguments.get(0);
+        List<Integer> rolls = userArguments.subList(1, userArguments.size()).stream()
+                .map(Integer::parseInt)
+                .collect(Collectors.toList());
+        Integer playerSpace = gooseGame.getPlayers().get(playerName);
+        Integer newPlayerSpace = gooseGame.movePlayer(playerName, rolls);
+        return playerName + " rolls " + rolls.stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining(", "))
+                + ". " + playerName + " moves from " + (playerSpace == 0 ? "Start" : playerSpace)
+                + " to " + newPlayerSpace;
+    }
+
+    private String handleAddPlayer(List<String> userArguments) throws PlayerAlreadyExistsException {
+        String playerName = userArguments.get(0);
+        gooseGame.addPlayer(playerName);
+        return gooseGame.getPlayers().keySet()
+                .stream()
+                .collect(Collectors.joining(", ", "players: ", ""));
     }
 }

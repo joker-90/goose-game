@@ -10,7 +10,7 @@ import java.util.function.Function;
 public enum Command {
 
     ADD_PLAYER("add player", true, Collections::singletonList),
-    MOVE_PLAYER("move", true, Collections::singletonList),
+    MOVE_PLAYER("move", true, arguments -> Arrays.asList(arguments.split(",\\s|\\s"))),
     EXIT("exit", false, null);
 
     private static final String COMMAND_ARGUMENTS_SEPARATOR = " ";
