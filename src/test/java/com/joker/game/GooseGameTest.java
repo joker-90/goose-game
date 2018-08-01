@@ -6,6 +6,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import java.util.Arrays;
+
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.junit.Assert.assertThat;
 
@@ -38,5 +41,15 @@ public class GooseGameTest {
 
         expectedException.expect(PlayerAlreadyExistsException.class);
         gooseGame.addPlayer(playerName);
+    }
+
+    @Test
+    public void testMovePlayerUpdatePlayerSpace() throws Exception {
+        String playerName = "Player name";
+        gooseGame.addPlayer(playerName);
+
+        Integer result = gooseGame.movePlayer(playerName, Arrays.asList(4, 2));
+
+        assertThat(result, equalTo(6));
     }
 }

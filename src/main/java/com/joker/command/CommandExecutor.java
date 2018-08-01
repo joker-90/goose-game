@@ -18,12 +18,24 @@ public class CommandExecutor {
     public String executeGameCommand(String userString) throws Exception {
         Command command = Command.getCommandFromString(userString);
         List<String> userArguments = command.getCommandArguments(userString);
+        String playerName = userArguments.get(0);
         switch (command) {
             case ADD_PLAYER:
-                gooseGame.addPlayer(userArguments.get(0));
+                gooseGame.addPlayer(playerName);
                 return gooseGame.getPlayers().keySet()
                         .stream()
                         .collect(Collectors.joining(", ", "players: ", ""));
+            case MOVE_PLAYER:
+                List<Integer> rolls = userArguments.subList(1, userArguments.size()).stream()
+                        .map(Integer::parseInt)
+                        .collect(Collectors.toList());
+                Integer playerSpace = gooseGame.getPlayers().get(playerName);
+                Integer newPlayerSpace = gooseGame.movePlayer(playerName, rolls);
+                return playerName + " rolls " + rolls.stream()
+                        .map(String::valueOf)
+                        .collect(Collectors.joining(", "))
+                        + ". " + playerName + " moves from " + playerSpace + " to " + newPlayerSpace;
+
             case EXIT:
                 throw new GameStoppedException();
             default:

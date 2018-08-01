@@ -46,7 +46,7 @@ public class CommandExecutorTest {
     }
 
     @Test
-    public void executeExitCommandThrows() throws Exception {
+    public void executeExitCommandThrowsException() throws Exception {
         expectedException.expect(GameStoppedException.class);
         commandExecutor.executeGameCommand("exit");
     }
