@@ -2,6 +2,7 @@ package com.joker.command;
 
 import com.joker.command.exception.CommandNotFoundException;
 import com.joker.command.exception.GameStoppedException;
+import com.joker.game.Die;
 import com.joker.game.GooseGame;
 import org.junit.Before;
 import org.junit.Rule;
@@ -23,12 +24,14 @@ public class CommandExecutorTest {
 
     private CommandExecutor commandExecutor;
     private GooseGame gooseGame;
+    private Die die;
 
     @Before
     public void setUp() {
         gooseGame = mock(GooseGame.class);
+        die = mock(Die.class);
 
-        commandExecutor = new CommandExecutor(gooseGame);
+        commandExecutor = new CommandExecutor(gooseGame, die);
     }
 
     @Test
@@ -51,8 +54,9 @@ public class CommandExecutorTest {
     public void executeMovePlayerGameCommandCallsGooseGameMovePlayer() throws Exception {
         when(gooseGame.getPlayers()).thenReturn(Collections.singletonMap("Pluto", 10), Collections.singletonMap("Pluto", 16));
         when(gooseGame.movePlayer("Pluto", Arrays.asList(4, 2))).thenReturn(false);
+        when(die.roll()).thenReturn(4, 2);
 
-        String result = commandExecutor.executeGameCommand("move Pluto 4, 2");
+        String result = commandExecutor.executeGameCommand("move Pluto");
 
         verify(gooseGame).movePlayer("Pluto", Arrays.asList(4, 2));
         assertThat(result, equalTo("Pluto rolls 4, 2. Pluto moves from 10 to 16"));
@@ -62,8 +66,9 @@ public class CommandExecutorTest {
     public void executeMovePlayerInStartSpaceGameCommandCallsGooseGameMovePlayer() throws Exception {
         when(gooseGame.getPlayers()).thenReturn(Collections.singletonMap("Pluto", 0), Collections.singletonMap("Pluto", 16));
         when(gooseGame.movePlayer("Pluto", Arrays.asList(4, 2))).thenReturn(false);
+        when(die.roll()).thenReturn(4, 2);
 
-        String result = commandExecutor.executeGameCommand("move Pluto 4, 2");
+        String result = commandExecutor.executeGameCommand("move Pluto");
 
         verify(gooseGame).movePlayer("Pluto", Arrays.asList(4, 2));
         assertThat(result, equalTo("Pluto rolls 4, 2. Pluto moves from Start to 16"));
@@ -74,8 +79,9 @@ public class CommandExecutorTest {
         when(gooseGame.getPlayers()).thenReturn(Collections.singletonMap("Pluto", 60), Collections.singletonMap("Pluto", 63));
         when(gooseGame.movePlayer("Pluto", Arrays.asList(1, 2))).thenReturn(false);
         when(gooseGame.getWinner()).thenReturn(Optional.of("Pluto"));
+        when(die.roll()).thenReturn(1, 2);
 
-        String result = commandExecutor.executeGameCommand("move Pluto 1, 2");
+        String result = commandExecutor.executeGameCommand("move Pluto");
 
         verify(gooseGame).movePlayer("Pluto", Arrays.asList(1, 2));
         assertThat(result, equalTo("Pluto rolls 1, 2. Pluto moves from 60 to 63. Pluto Wins!!"));
@@ -86,8 +92,9 @@ public class CommandExecutorTest {
         when(gooseGame.getPlayers()).thenReturn(Collections.singletonMap("Pluto", 60), Collections.singletonMap("Pluto", 61));
         when(gooseGame.movePlayer("Pluto", Arrays.asList(3, 2))).thenReturn(true);
         when(gooseGame.getWinner()).thenReturn(Optional.empty());
+        when(die.roll()).thenReturn(3, 2);
 
-        String result = commandExecutor.executeGameCommand("move Pluto 3, 2");
+        String result = commandExecutor.executeGameCommand("move Pluto");
 
         verify(gooseGame).movePlayer("Pluto", Arrays.asList(3, 2));
         assertThat(result, equalTo("Pluto rolls 3, 2. Pluto moves from 60 to 63. Pluto bounces! Pluto returns to 61"));

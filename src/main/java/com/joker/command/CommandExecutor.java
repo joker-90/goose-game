@@ -2,19 +2,23 @@ package com.joker.command;
 
 import com.joker.command.exception.CommandNotFoundException;
 import com.joker.command.exception.GameStoppedException;
+import com.joker.game.Die;
 import com.joker.game.GooseGame;
 import com.joker.game.exception.PlayerAlreadyExistsException;
 import com.joker.game.exception.PlayerNotFoundException;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class CommandExecutor {
 
     private final GooseGame gooseGame;
+    private final Die die;
 
-    public CommandExecutor(GooseGame gooseGame) {
+    public CommandExecutor(GooseGame gooseGame, Die die) {
         this.gooseGame = gooseGame;
+        this.die = die;
     }
 
     public String executeGameCommand(String userString) throws Exception {
@@ -34,9 +38,7 @@ public class CommandExecutor {
 
     private String handleMovePlayer(List<String> userArguments) throws PlayerNotFoundException {
         String playerName = userArguments.get(0);
-        List<Integer> rolls = userArguments.subList(1, userArguments.size()).stream()
-                .map(Integer::parseInt)
-                .collect(Collectors.toList());
+        List<Integer> rolls = Arrays.asList(die.roll(), die.roll());
 
         Integer playerSpace = gooseGame.getPlayers().get(playerName);
         boolean bounced = gooseGame.movePlayer(playerName, rolls);
