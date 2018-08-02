@@ -7,22 +7,23 @@ import java.util.*;
 
 public class GooseGame {
 
-    public static final int FINAL_SPACE = 63;
+    private static final int FINAL_SPACE = 63;
     private final Map<String, Integer> players;
-    private String winner;
+    private final List<GameListener> gameListeners;
 
     public GooseGame() {
         this.players = new HashMap<>();
+        this.gameListeners = new ArrayList<>();
     }
 
     public void addPlayer(String name) throws PlayerAlreadyExistsException {
         if (players.containsKey(name)) {
-            throw new PlayerAlreadyExistsException("Player " + name + "already exist");
+            throw new PlayerAlreadyExistsException(name);
         }
         players.put(name, 0);
     }
 
-    public boolean movePlayer(String name, List<Integer> rolls) throws PlayerNotFoundException {
+    public void movePlayer(String name, List<Integer> rolls) throws PlayerNotFoundException {
         Integer actualSpace = players.get(name);
         if (actualSpace == null) {
             throw new PlayerNotFoundException(name);
@@ -32,23 +33,32 @@ public class GooseGame {
                 .mapToInt(Integer::intValue)
                 .sum();
 
-        boolean bounced = false;
-
         int newSpace = actualSpace + rollsSum;
+        notifyAllOnPlayerMoved(name, actualSpace, Math.min(newSpace, FINAL_SPACE));
         if (newSpace > FINAL_SPACE) {
             newSpace = 2 * FINAL_SPACE - newSpace;
-            bounced = true;
+            notifyAllOnBouncedPlayer(name, actualSpace, newSpace);
         } else if (newSpace == FINAL_SPACE) {
-            winner = name;
+            notifyAllOnPlayerWin(name);
         }
 
         players.put(name, newSpace);
-
-        return bounced;
     }
 
-    public Optional<String> getWinner() {
-        return Optional.ofNullable(winner);
+    public void addGameListener(GameListener gameListener) {
+        gameListeners.add(gameListener);
+    }
+
+    private void notifyAllOnPlayerMoved(String name, Integer from, Integer to) {
+        gameListeners.forEach(gameListener -> gameListener.onPlayerMoved(name, from, to));
+    }
+
+    private void notifyAllOnBouncedPlayer(String name, Integer from, Integer to) {
+        gameListeners.forEach(gameListener -> gameListener.onPlayerBounced(name, from, to));
+    }
+
+    private void notifyAllOnPlayerWin(String name) {
+        gameListeners.forEach(gameListener -> gameListener.onPlayerWin(name));
     }
 
     public Map<String, Integer> getPlayers() {

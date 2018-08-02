@@ -1,5 +1,6 @@
 package com.joker;
 
+import com.joker.command.CLIGameListener;
 import com.joker.command.CommandExecutor;
 import com.joker.command.exception.CommandNotFoundException;
 import com.joker.command.exception.GameStoppedException;
@@ -13,8 +14,9 @@ public class App {
         System.out.println("Hello! This is The Goose Game!");
 
         GooseGame gooseGame = new GooseGame();
+        gooseGame.addGameListener(new CLIGameListener(System.out));
         Die die = new Die(6);
-        CommandExecutor commandExecutor = new CommandExecutor(gooseGame, die);
+        CommandExecutor commandExecutor = new CommandExecutor(gooseGame, die, System.out);
 
         try (Scanner scanner = new Scanner(System.in)) {
             boolean continueGame = true;
@@ -22,7 +24,7 @@ public class App {
                 System.out.print("Type command: ");
                 String command = scanner.nextLine();
                 try {
-                    System.out.println(commandExecutor.executeGameCommand(command));
+                    commandExecutor.executeGameCommand(command);
                 } catch (CommandNotFoundException cnfe) {
                     System.out.println(cnfe.getMessage());
                 } catch (GameStoppedException gse) {

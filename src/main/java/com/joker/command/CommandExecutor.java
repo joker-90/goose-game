@@ -7,6 +7,7 @@ import com.joker.game.GooseGame;
 import com.joker.game.exception.PlayerAlreadyExistsException;
 import com.joker.game.exception.PlayerNotFoundException;
 
+import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,19 +17,24 @@ public class CommandExecutor {
     private final GooseGame gooseGame;
     private final Die die;
 
-    public CommandExecutor(GooseGame gooseGame, Die die) {
+    private final PrintStream printStream;
+
+    public CommandExecutor(GooseGame gooseGame, Die die, PrintStream printStream) {
         this.gooseGame = gooseGame;
         this.die = die;
+        this.printStream = printStream;
     }
 
-    public String executeGameCommand(String userString) throws Exception {
+    public void executeGameCommand(String userString) throws Exception {
         Command command = Command.getCommandFromString(userString);
         List<String> userArguments = command.getCommandArguments(userString);
         switch (command) {
             case ADD_PLAYER:
-                return handleAddPlayer(userArguments);
+                handleAddPlayer(userArguments);
+                break;
             case MOVE_PLAYER:
-                return handleMovePlayer(userArguments);
+                handleMovePlayer(userArguments);
+                break;
             case EXIT:
                 throw new GameStoppedException();
             default:
@@ -36,31 +42,26 @@ public class CommandExecutor {
         }
     }
 
-    private String handleMovePlayer(List<String> userArguments) throws PlayerNotFoundException {
+    private void handleMovePlayer(List<String> userArguments) throws PlayerNotFoundException {
         String playerName = userArguments.get(0);
+
         List<Integer> rolls = Arrays.asList(die.roll(), die.roll());
 
-        Integer playerSpace = gooseGame.getPlayers().get(playerName);
-        boolean bounced = gooseGame.movePlayer(playerName, rolls);
-        Integer newPlayerSpace = gooseGame.getPlayers().get(playerName);
+        gooseGame.movePlayer(playerName, rolls);
 
         String rollsString = rolls.stream()
                 .map(String::valueOf)
                 .collect(Collectors.joining(", "));
-        return playerName + " rolls " + rollsString + ". " + playerName +
-                " moves from " +
-                (playerSpace == 0 ? "Start" : playerSpace) +
-                " to " + (bounced ? +GooseGame.FINAL_SPACE + ". " + playerName + " bounces! " + playerName + " returns to " + newPlayerSpace : newPlayerSpace)
-                + (gooseGame.getWinner().isPresent() ? ". " + gooseGame.getWinner().get() + " Wins!!" : "");
+        printStream.print(playerName + " rolls " + rollsString + ". ");
     }
 
-    private String handleAddPlayer(List<String> userArguments) throws PlayerAlreadyExistsException {
+    private void handleAddPlayer(List<String> userArguments) throws PlayerAlreadyExistsException {
         String playerName = userArguments.get(0);
 
         gooseGame.addPlayer(playerName);
 
-        return gooseGame.getPlayers().keySet()
+        printStream.println(gooseGame.getPlayers().keySet()
                 .stream()
-                .collect(Collectors.joining(", ", "players: ", ""));
+                .collect(Collectors.joining(", ", "players: ", "")));
     }
 }

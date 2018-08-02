@@ -11,17 +11,24 @@ import java.util.Arrays;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.*;
 
 public class GooseGameTest {
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
 
+    private GameListener gameListener;
+
     private GooseGame gooseGame;
 
     @Before
     public void setUp() {
         gooseGame = new GooseGame();
+
+        gameListener = mock(GameListener.class);
+
+        gooseGame.addGameListener(gameListener);
     }
 
     @Test
@@ -31,6 +38,7 @@ public class GooseGameTest {
         gooseGame.addPlayer(playerName);
 
         assertThat(gooseGame.getPlayers(), hasEntry(playerName, 0));
+        verifyZeroInteractions(gameListener);
     }
 
     @Test
@@ -48,11 +56,10 @@ public class GooseGameTest {
         String playerName = "Pippo";
         gooseGame.addPlayer(playerName);
 
-        boolean result = gooseGame.movePlayer(playerName, Arrays.asList(4, 2));
+        gooseGame.movePlayer(playerName, Arrays.asList(4, 2));
 
-        assertThat(result, equalTo(false));
+        verify(gameListener).onPlayerMoved(playerName, 0, 6);
         assertThat(gooseGame.getPlayers().get(playerName), equalTo(6));
-        assertThat(gooseGame.getWinner().isPresent(), equalTo(false));
     }
 
     @Test
@@ -60,12 +67,11 @@ public class GooseGameTest {
         String playerName = "Pippo";
         gooseGame.addPlayer(playerName);
 
-        boolean result = gooseGame.movePlayer(playerName, Arrays.asList(60, 3));
+        gooseGame.movePlayer(playerName, Arrays.asList(60, 3));
 
-        assertThat(result, equalTo(false));
+        verify(gameListener).onPlayerMoved(playerName, 0, 63);
+        verify(gameListener).onPlayerWin(playerName);
         assertThat(gooseGame.getPlayers().get(playerName), equalTo(63));
-        assertThat(gooseGame.getWinner().isPresent(), equalTo(true));
-        assertThat(gooseGame.getWinner().get(), equalTo(playerName));
     }
 
     @Test
@@ -73,11 +79,11 @@ public class GooseGameTest {
         String playerName = "Pippo";
         gooseGame.addPlayer(playerName);
 
-        boolean result = gooseGame.movePlayer(playerName, Arrays.asList(60, 5));
+        gooseGame.movePlayer(playerName, Arrays.asList(60, 5));
 
-        assertThat(result, equalTo(true));
+        verify(gameListener).onPlayerMoved(playerName, 0, 63);
+        verify(gameListener).onPlayerBounced(playerName, 0, 61);
         assertThat(gooseGame.getPlayers().get(playerName), equalTo(61));
-        assertThat(gooseGame.getWinner().isPresent(), equalTo(false));
     }
 
 }
