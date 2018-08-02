@@ -1,5 +1,6 @@
 package com.joker.game;
 
+import com.joker.game.board.Board;
 import com.joker.game.exception.PlayerAlreadyExistsException;
 import org.junit.Before;
 import org.junit.Rule;
@@ -21,13 +22,15 @@ public class GooseGameTest {
     private GameListener gameListener;
 
     private GooseGame gooseGame;
+    private Board board;
 
     @Before
     public void setUp() {
-        gooseGame = new GooseGame();
+        board = new Board();
 
         gameListener = mock(GameListener.class);
 
+        gooseGame = new GooseGame(board);
         gooseGame.addGameListener(gameListener);
     }
 
@@ -56,10 +59,21 @@ public class GooseGameTest {
         String playerName = "Pippo";
         gooseGame.addPlayer(playerName);
 
+        gooseGame.movePlayer(playerName, Arrays.asList(3, 2));
+
+        verify(gameListener).onPlayerMoved(playerName, board.getSpace(0), board.getSpace(5));
+        assertThat(gooseGame.getPlayers().get(playerName), equalTo(5));
+    }
+
+    @Test
+    public void testMovePlayerOnBridgeSpaceUpdatePlayerSpace() throws Exception {
+        String playerName = "Pippo";
+        gooseGame.addPlayer(playerName);
+
         gooseGame.movePlayer(playerName, Arrays.asList(4, 2));
 
-        verify(gameListener).onPlayerMoved(playerName, 0, 6);
-        assertThat(gooseGame.getPlayers().get(playerName), equalTo(6));
+        verify(gameListener).onPlayerMoved(playerName, board.getSpace(0), board.getSpace(6));
+        assertThat(gooseGame.getPlayers().get(playerName), equalTo(12));
     }
 
     @Test
@@ -69,7 +83,7 @@ public class GooseGameTest {
 
         gooseGame.movePlayer(playerName, Arrays.asList(60, 3));
 
-        verify(gameListener).onPlayerMoved(playerName, 0, 63);
+        verify(gameListener).onPlayerMoved(playerName, board.getSpace(0), board.getSpace(63));
         verify(gameListener).onPlayerWin(playerName);
         assertThat(gooseGame.getPlayers().get(playerName), equalTo(63));
     }
@@ -81,8 +95,8 @@ public class GooseGameTest {
 
         gooseGame.movePlayer(playerName, Arrays.asList(60, 5));
 
-        verify(gameListener).onPlayerMoved(playerName, 0, 63);
-        verify(gameListener).onPlayerBounced(playerName, 0, 61);
+        verify(gameListener).onPlayerMoved(playerName, board.getSpace(0), board.getSpace(63));
+        verify(gameListener).onPlayerBounced(playerName, board.getSpace(61));
         assertThat(gooseGame.getPlayers().get(playerName), equalTo(61));
     }
 

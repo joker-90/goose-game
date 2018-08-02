@@ -47,12 +47,12 @@ public class CommandExecutor {
 
         List<Integer> rolls = Arrays.asList(die.roll(), die.roll());
 
-        gooseGame.movePlayer(playerName, rolls);
-
         String rollsString = rolls.stream()
                 .map(String::valueOf)
                 .collect(Collectors.joining(", "));
         printStream.print(playerName + " rolls " + rollsString + ". ");
+
+        gooseGame.movePlayer(playerName, rolls);
     }
 
     private void handleAddPlayer(List<String> userArguments) throws PlayerAlreadyExistsException {
@@ -60,7 +60,7 @@ public class CommandExecutor {
 
         gooseGame.addPlayer(playerName);
 
-        printStream.println(gooseGame.getPlayers().keySet()
+        printStream.print(gooseGame.getPlayers().keySet()
                 .stream()
                 .collect(Collectors.joining(", ", "players: ", "")));
     }

@@ -1,6 +1,7 @@
 package com.joker.command;
 
 import com.joker.game.GameListener;
+import com.joker.game.board.space.Space;
 
 import java.io.PrintStream;
 
@@ -13,20 +14,25 @@ public class CLIGameListener implements GameListener {
     }
 
     @Override
-    public void onPlayerMoved(String name, Integer from, Integer to) {
-        printStream.print(name
+    public void onPlayerMoved(String playerName, Space from, Space to) {
+        printStream.print(playerName
                 + " moves from "
-                + (from == 0 ? "Start" : from)
-                + " to " + to + ". ");
+                + from.getName()
+                + " to " + to.getName() + ". ");
     }
 
     @Override
-    public void onPlayerBounced(String name, Integer from, Integer to) {
-        printStream.print(name + " bounces! " + name + " returns to " + to + ". ");
+    public void onPlayerBounced(String playerName, Space to) {
+        printStream.print(playerName + " bounces! " + playerName + " returns to " + to.getName() + ". ");
     }
 
     @Override
-    public void onPlayerWin(String name) {
-        printStream.print(name + " Wins!!");
+    public void onPlayerWin(String playerName) {
+        printStream.print(playerName + " Wins!!");
+    }
+
+    @Override
+    public void onPlayerJump(String playerName, Space to) {
+        printStream.print(playerName + " jumps to " + to.getName());
     }
 }
