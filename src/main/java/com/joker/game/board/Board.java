@@ -2,6 +2,7 @@ package com.joker.game.board;
 
 import com.joker.game.GooseGame;
 import com.joker.game.board.space.DefaultSpace;
+import com.joker.game.board.space.GooseSpace;
 import com.joker.game.board.space.Space;
 import com.joker.game.board.space.TheBridgeSpace;
 
@@ -22,6 +23,13 @@ public class Board {
                             return new DefaultSpace("Start", i);
                         case 6:
                             return new TheBridgeSpace("The Bridge", i);
+                        case 5:
+                        case 9:
+                        case 14:
+                        case 18:
+                        case 23:
+                        case 27:
+                            return new GooseSpace("The Goose", i);
                         default:
                             return new DefaultSpace(Integer.toString(i), i);
                     }

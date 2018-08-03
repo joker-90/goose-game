@@ -55,29 +55,30 @@ public class GooseGameTest {
     }
 
     @Test
-    public void testMovePlayerUpdatePlayerSpace() throws Exception {
+    public void testMovePlayerUpdatePlayerSpaceAndNotifyMoved() throws Exception {
         String playerName = "Pippo";
         gooseGame.addPlayer(playerName);
 
-        gooseGame.movePlayer(playerName, Arrays.asList(3, 2));
+        gooseGame.movePlayer(playerName, Arrays.asList(2, 2));
 
-        verify(gameListener).onPlayerMoved(playerName, board.getSpace(0), board.getSpace(5));
-        assertThat(gooseGame.getPlayers().get(playerName), equalTo(5));
+        verify(gameListener).onPlayerMoved(playerName, board.getSpace(0), board.getSpace(4));
+        assertThat(gooseGame.getPlayers().get(playerName), equalTo(4));
     }
 
     @Test
-    public void testMovePlayerOnBridgeSpaceUpdatePlayerSpace() throws Exception {
+    public void testMovePlayerOnBridgeSpaceUpdatePlayerSpaceAndNotifyMoved() throws Exception {
         String playerName = "Pippo";
         gooseGame.addPlayer(playerName);
 
         gooseGame.movePlayer(playerName, Arrays.asList(4, 2));
 
         verify(gameListener).onPlayerMoved(playerName, board.getSpace(0), board.getSpace(6));
+        verify(gameListener).onPlayerJump(playerName, board.getSpace(12));
         assertThat(gooseGame.getPlayers().get(playerName), equalTo(12));
     }
 
     @Test
-    public void testMovePlayerWinUpdatePlayerSpaceAndIsWinner() throws Exception {
+    public void testMovePlayerWinUpdatePlayerSpaceAndNotifyWin() throws Exception {
         String playerName = "Pippo";
         gooseGame.addPlayer(playerName);
 
@@ -89,7 +90,7 @@ public class GooseGameTest {
     }
 
     @Test
-    public void testMovePlayerOverMaxSpaceBounceAndUpdatePlayerSpace() throws Exception {
+    public void testMovePlayerOverMaxSpaceBounceAndUpdatePlayerSpaceAndNotifyBounced() throws Exception {
         String playerName = "Pippo";
         gooseGame.addPlayer(playerName);
 
@@ -98,6 +99,29 @@ public class GooseGameTest {
         verify(gameListener).onPlayerMoved(playerName, board.getSpace(0), board.getSpace(63));
         verify(gameListener).onPlayerBounced(playerName, board.getSpace(61));
         assertThat(gooseGame.getPlayers().get(playerName), equalTo(61));
+    }
+
+    @Test
+    public void testMovePlayerOnGooseSpaceUpdatePlayerSpaceAndNotifyMoved() throws Exception {
+        String playerName = "Pippo";
+        gooseGame.addPlayer(playerName);
+
+        gooseGame.movePlayer(playerName, Arrays.asList(4, 1));
+
+        verify(gameListener).onPlayerMoved(playerName, board.getSpace(0), board.getSpace(5));
+        assertThat(gooseGame.getPlayers().get(playerName), equalTo(10));
+    }
+
+    @Test
+    public void testMovePlayerOnGooseSpaceMoveTwiceUpdatePlayerSpaceAndNotifyMoved() throws Exception {
+        String playerName = "Pippo";
+        gooseGame.addPlayer(playerName);
+
+        gooseGame.movePlayer(playerName, Arrays.asList(4, 6));
+        gooseGame.movePlayer(playerName, Arrays.asList(2, 2));
+
+        verify(gameListener).onPlayerMoved(playerName, board.getSpace(0), board.getSpace(10));
+        assertThat(gooseGame.getPlayers().get(playerName), equalTo(22));
     }
 
 }

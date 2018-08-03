@@ -42,6 +42,12 @@ public class GooseGame {
         Space actualSpace = board.getSpace(actualSpaceIndex);
         notifyAllOnPlayerMoved(playerName, actualSpace, board.getSpace(Math.min(newSpaceIndex, FINAL_SPACE)));
 
+        newSpaceIndex = evaluateSpaceRule(playerName, rollsSum, newSpaceIndex);
+
+        players.put(playerName, newSpaceIndex);
+    }
+
+    private int evaluateSpaceRule(String playerName, Integer rollsSum, int newSpaceIndex) {
         if (newSpaceIndex > FINAL_SPACE) {
             newSpaceIndex = 2 * FINAL_SPACE - newSpaceIndex;
             notifyAllOnBouncedPlayer(playerName, board.getSpace(newSpaceIndex));
@@ -49,13 +55,12 @@ public class GooseGame {
             notifyAllOnPlayerWin(playerName);
         }
 
-        Integer evaluatedRule = board.getSpace(newSpaceIndex).evaluateRule();
+        Integer evaluatedRule = board.getSpace(newSpaceIndex).getSpaceRule().apply(rollsSum);
         if (!evaluatedRule.equals(newSpaceIndex)) {
-            newSpaceIndex = evaluatedRule;
-            notifyAllOnPlayerJump(playerName, board.getSpace(newSpaceIndex));
+            notifyAllOnPlayerJump(playerName, board.getSpace(evaluatedRule));
+            return evaluateSpaceRule(playerName, rollsSum, evaluatedRule);
         }
-
-        players.put(playerName, newSpaceIndex);
+        return evaluatedRule;
     }
 
     public void addGameListener(GameListener gameListener) {

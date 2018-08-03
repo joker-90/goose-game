@@ -1,5 +1,7 @@
 package com.joker.game.board.space;
 
+import java.util.function.Function;
+
 public class DefaultSpace implements Space {
 
     private final String name;
@@ -17,8 +19,8 @@ public class DefaultSpace implements Space {
     }
 
     @Override
-    public Integer evaluateRule() {
-        return index;
+    public Function<Integer, Integer> getSpaceRule() {
+        return (roll) -> index;
     }
 
     public Integer getIndex() {

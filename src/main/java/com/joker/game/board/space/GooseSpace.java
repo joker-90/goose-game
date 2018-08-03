@@ -2,14 +2,14 @@ package com.joker.game.board.space;
 
 import java.util.function.Function;
 
-public class TheBridgeSpace extends DefaultSpace {
+public class GooseSpace extends DefaultSpace {
 
-    public TheBridgeSpace(String name, Integer index) {
+    public GooseSpace(String name, Integer index) {
         super(name, index);
     }
 
     @Override
     public Function<Integer, Integer> getSpaceRule() {
-        return (roll) -> 12;
+        return (Integer roll) -> getIndex() + roll;
     }
 }

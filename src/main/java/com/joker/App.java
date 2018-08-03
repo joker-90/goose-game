@@ -16,7 +16,9 @@ public class App {
 
         GooseGame gooseGame = new GooseGame(new Board());
         gooseGame.addGameListener(new CLIGameListener(System.out));
+
         Die die = new Die(6);
+
         CommandExecutor commandExecutor = new CommandExecutor(gooseGame, die, System.out);
 
         try (Scanner scanner = new Scanner(System.in)) {
