@@ -48,7 +48,7 @@ public class CommandExecutorTest {
         commandExecutor.executeGameCommand("add player Pluto");
 
         verify(gooseGame).addPlayer("Pluto");
-        verify(printStream).println("players: Pluto");
+        verify(printStream).print("players: Pluto");
     }
 
     @Test
