@@ -11,4 +11,6 @@ public interface GameListener {
     void onPlayerWin(String playerName);
 
     void onPlayerJump(String playerName, Space to);
+
+    void onPlayerPrank(String playerJokedName, Space from, Space to);
 }

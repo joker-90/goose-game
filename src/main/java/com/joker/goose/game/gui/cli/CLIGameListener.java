@@ -33,6 +33,11 @@ public class CLIGameListener implements GameListener {
 
     @Override
     public void onPlayerJump(String playerName, Space to) {
-        printStream.print(playerName + " jumps to " + to.getName());
+        printStream.print(playerName + " jumps to " + to.getName() + ". ");
+    }
+
+    @Override
+    public void onPlayerPrank(String playerJokedName, Space from, Space to) {
+        printStream.print("On " + from.getName() + " there is " + playerJokedName + ", who returns to " + to.getName() + ". ");
     }
 }

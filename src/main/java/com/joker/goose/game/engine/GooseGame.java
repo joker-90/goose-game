@@ -44,25 +44,37 @@ public class GooseGame {
 
         newSpaceIndex = evaluateSpaceRule(playerName, rollsSum, newSpaceIndex);
 
-        players.put(playerName, newSpaceIndex);
+        handleAnotherPlayerInSpace(playerName, actualSpaceIndex, newSpaceIndex);
+    }
+
+    private void handleAnotherPlayerInSpace(String actualPlayerName, Integer actualPlayerSpace, Integer spaceIndex) {
+        players.entrySet().stream()
+                .filter(e -> !e.getKey().equals(actualPlayerName))
+                .filter(e -> e.getValue().equals(spaceIndex))
+                .forEach(e -> {
+                    e.setValue(actualPlayerSpace);
+                    notifyAllOnPlayerPrank(e.getKey(), board.getSpace(spaceIndex), board.getSpace(actualPlayerSpace));
+                });
     }
 
     private Integer evaluateSpaceRule(String playerName, Integer rollsSum, Integer newSpaceIndex) {
-        Integer evaluatedRule = newSpaceIndex;
 
-        if (evaluatedRule > FINAL_SPACE) {
-            evaluatedRule = 2 * FINAL_SPACE - evaluatedRule;
-            notifyAllOnBouncedPlayer(playerName, board.getSpace(evaluatedRule));
-        } else if (evaluatedRule == FINAL_SPACE) {
+        if (newSpaceIndex > FINAL_SPACE) {
+            newSpaceIndex = 2 * FINAL_SPACE - newSpaceIndex;
+            notifyAllOnBouncedPlayer(playerName, board.getSpace(newSpaceIndex));
+        } else if (newSpaceIndex == FINAL_SPACE) {
             notifyAllOnPlayerWin(playerName);
         }
 
-        evaluatedRule = board.getSpace(evaluatedRule).getSpaceRule().apply(rollsSum);
-        if (!evaluatedRule.equals(newSpaceIndex)) {
-            notifyAllOnPlayerJump(playerName, board.getSpace(evaluatedRule));
-            return evaluateSpaceRule(playerName, rollsSum, evaluatedRule);
+        Integer evaluatedLandingSpaceRule = board.getSpace(newSpaceIndex).getSpaceRule().apply(rollsSum);
+        if (!evaluatedLandingSpaceRule.equals(newSpaceIndex)) {
+            notifyAllOnPlayerJump(playerName, board.getSpace(evaluatedLandingSpaceRule));
+            return evaluateSpaceRule(playerName, rollsSum, evaluatedLandingSpaceRule);
         }
-        return evaluatedRule;
+
+        players.put(playerName, evaluatedLandingSpaceRule);
+
+        return evaluatedLandingSpaceRule;
     }
 
     public void addGameListener(GameListener gameListener) {
@@ -87,5 +99,9 @@ public class GooseGame {
 
     private void notifyAllOnPlayerJump(String playerName, Space to) {
         gameListeners.forEach(gameListener -> gameListener.onPlayerJump(playerName, to));
+    }
+
+    private void notifyAllOnPlayerPrank(String playerJokedName, Space from, Space to) {
+        gameListeners.forEach(gameListener -> gameListener.onPlayerPrank(playerJokedName, from, to));
     }
 }

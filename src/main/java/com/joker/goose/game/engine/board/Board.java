@@ -29,7 +29,7 @@ public class Board {
                         case 18:
                         case 23:
                         case 27:
-                            return new TheGooseSpace("The Goose", i);
+                            return new TheGooseSpace(i + ", The Goose", i);
                         default:
                             return new DefaultSpace(Integer.toString(i), i);
                     }

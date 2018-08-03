@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasEntry;
@@ -98,6 +99,7 @@ public class GooseGameTest {
 
         verify(gameListener).onPlayerMoved(playerName, board.getSpace(0), board.getSpace(63));
         verify(gameListener).onPlayerBounced(playerName, board.getSpace(61));
+        verifyNoMoreInteractions(gameListener);
         assertThat(gooseGame.getPlayers().get(playerName), equalTo(61));
     }
 
@@ -121,7 +123,25 @@ public class GooseGameTest {
         gooseGame.movePlayer(playerName, Arrays.asList(2, 2));
 
         verify(gameListener).onPlayerMoved(playerName, board.getSpace(0), board.getSpace(10));
+        verify(gameListener).onPlayerJump(playerName, board.getSpace(22));
         assertThat(gooseGame.getPlayers().get(playerName), equalTo(22));
     }
 
+    @Test
+    public void testMovePlayerOnAlreadyOccupiedSpaceUpdateTwoPlayer() throws Exception {
+        String playerName1 = "Pippo";
+        gooseGame.addPlayer(playerName1);
+        gooseGame.movePlayer(playerName1, Collections.singletonList(15));
+
+        String playerName2 = "Pluto";
+        gooseGame.addPlayer(playerName2);
+        gooseGame.movePlayer(playerName2, Collections.singletonList(17));
+
+        gooseGame.movePlayer(playerName1, Arrays.asList(1, 1));
+
+        verify(gameListener).onPlayerMoved(playerName1, board.getSpace(15), board.getSpace(17));
+        verify(gameListener).onPlayerPrank(playerName2, board.getSpace(17), board.getSpace(15));
+        assertThat(gooseGame.getPlayers().get(playerName1), equalTo(17));
+        assertThat(gooseGame.getPlayers().get(playerName2), equalTo(15));
+    }
 }
