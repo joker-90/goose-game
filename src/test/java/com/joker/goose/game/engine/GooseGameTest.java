@@ -1,7 +1,7 @@
-package com.joker.game;
+package com.joker.goose.game.engine;
 
-import com.joker.game.board.Board;
-import com.joker.game.exception.PlayerAlreadyExistsException;
+import com.joker.goose.game.engine.board.Board;
+import com.joker.goose.game.engine.exception.PlayerAlreadyExistsException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;

@@ -1,6 +1,6 @@
-package com.joker.game;
+package com.joker.goose.game.engine;
 
-import com.joker.game.board.space.Space;
+import com.joker.goose.game.engine.board.space.Space;
 
 public interface GameListener {
 

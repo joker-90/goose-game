@@ -1,4 +1,4 @@
-package com.joker.game.board.space;
+package com.joker.goose.game.engine.board.space;
 
 import java.util.function.Function;
 

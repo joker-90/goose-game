@@ -1,10 +1,10 @@
-package com.joker.game.board;
+package com.joker.goose.game.engine.board;
 
-import com.joker.game.GooseGame;
-import com.joker.game.board.space.DefaultSpace;
-import com.joker.game.board.space.GooseSpace;
-import com.joker.game.board.space.Space;
-import com.joker.game.board.space.TheBridgeSpace;
+import com.joker.goose.game.engine.GooseGame;
+import com.joker.goose.game.engine.board.space.DefaultSpace;
+import com.joker.goose.game.engine.board.space.Space;
+import com.joker.goose.game.engine.board.space.TheBridgeSpace;
+import com.joker.goose.game.engine.board.space.TheGooseSpace;
 
 import java.util.Collections;
 import java.util.List;
@@ -29,7 +29,7 @@ public class Board {
                         case 18:
                         case 23:
                         case 27:
-                            return new GooseSpace("The Goose", i);
+                            return new TheGooseSpace("The Goose", i);
                         default:
                             return new DefaultSpace(Integer.toString(i), i);
                     }

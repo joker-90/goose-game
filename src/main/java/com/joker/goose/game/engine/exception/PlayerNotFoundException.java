@@ -1,4 +1,4 @@
-package com.joker.game.exception;
+package com.joker.goose.game.engine.exception;
 
 public class PlayerNotFoundException extends Exception {
     public PlayerNotFoundException(String name) {

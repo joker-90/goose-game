@@ -1,11 +1,11 @@
-package com.joker.command;
+package com.joker.goose.game.gui.cli;
 
-import com.joker.command.exception.CommandNotFoundException;
-import com.joker.command.exception.GameStoppedException;
-import com.joker.game.Die;
-import com.joker.game.GooseGame;
-import com.joker.game.exception.PlayerAlreadyExistsException;
-import com.joker.game.exception.PlayerNotFoundException;
+import com.joker.goose.game.engine.Dice;
+import com.joker.goose.game.engine.GooseGame;
+import com.joker.goose.game.engine.exception.PlayerAlreadyExistsException;
+import com.joker.goose.game.engine.exception.PlayerNotFoundException;
+import com.joker.goose.game.gui.cli.exception.CommandNotFoundException;
+import com.joker.goose.game.gui.cli.exception.GameStoppedException;
 
 import java.io.PrintStream;
 import java.util.Arrays;
@@ -15,13 +15,13 @@ import java.util.stream.Collectors;
 public class CommandExecutor {
 
     private final GooseGame gooseGame;
-    private final Die die;
+    private final Dice dice;
 
     private final PrintStream printStream;
 
-    public CommandExecutor(GooseGame gooseGame, Die die, PrintStream printStream) {
+    public CommandExecutor(GooseGame gooseGame, Dice dice, PrintStream printStream) {
         this.gooseGame = gooseGame;
-        this.die = die;
+        this.dice = dice;
         this.printStream = printStream;
     }
 
@@ -45,7 +45,7 @@ public class CommandExecutor {
     private void handleMovePlayer(List<String> userArguments) throws PlayerNotFoundException {
         String playerName = userArguments.get(0);
 
-        List<Integer> rolls = Arrays.asList(die.roll(), die.roll());
+        List<Integer> rolls = Arrays.asList(dice.roll(), dice.roll());
 
         String rollsString = rolls.stream()
                 .map(String::valueOf)

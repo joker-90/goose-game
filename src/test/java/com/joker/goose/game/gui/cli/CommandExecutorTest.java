@@ -1,9 +1,9 @@
-package com.joker.command;
+package com.joker.goose.game.gui.cli;
 
-import com.joker.command.exception.CommandNotFoundException;
-import com.joker.command.exception.GameStoppedException;
-import com.joker.game.Die;
-import com.joker.game.GooseGame;
+import com.joker.goose.game.engine.Dice;
+import com.joker.goose.game.engine.GooseGame;
+import com.joker.goose.game.gui.cli.exception.CommandNotFoundException;
+import com.joker.goose.game.gui.cli.exception.GameStoppedException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -21,7 +21,7 @@ public class CommandExecutorTest {
     public ExpectedException expectedException = ExpectedException.none();
 
     private GooseGame gooseGame;
-    private Die die;
+    private Dice dice;
     private PrintStream printStream;
 
     private CommandExecutor commandExecutor;
@@ -29,10 +29,10 @@ public class CommandExecutorTest {
     @Before
     public void setUp() {
         gooseGame = mock(GooseGame.class);
-        die = mock(Die.class);
+        dice = mock(Dice.class);
         printStream = mock(PrintStream.class);
 
-        commandExecutor = new CommandExecutor(gooseGame, die, printStream);
+        commandExecutor = new CommandExecutor(gooseGame, dice, printStream);
     }
 
     @Test
@@ -53,7 +53,7 @@ public class CommandExecutorTest {
 
     @Test
     public void executeMovePlayerGameCommandCallsGooseGameMovePlayer() throws Exception {
-        when(die.roll()).thenReturn(4, 2);
+        when(dice.roll()).thenReturn(4, 2);
 
         commandExecutor.executeGameCommand("move Pluto");
 

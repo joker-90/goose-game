@@ -1,13 +1,13 @@
-package com.joker.game;
+package com.joker.goose.game.engine;
 
 import java.util.Random;
 
-public class Die {
+public class Dice {
 
     private final Random random;
     private final int size;
 
-    public Die(int size) {
+    public Dice(int size) {
         this.size = size;
         this.random = new Random();
     }

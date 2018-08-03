@@ -1,12 +1,12 @@
-package com.joker;
+package com.joker.goose.game;
 
-import com.joker.command.CLIGameListener;
-import com.joker.command.CommandExecutor;
-import com.joker.command.exception.CommandNotFoundException;
-import com.joker.command.exception.GameStoppedException;
-import com.joker.game.Die;
-import com.joker.game.GooseGame;
-import com.joker.game.board.Board;
+import com.joker.goose.game.engine.Dice;
+import com.joker.goose.game.engine.GooseGame;
+import com.joker.goose.game.engine.board.Board;
+import com.joker.goose.game.gui.cli.CLIGameListener;
+import com.joker.goose.game.gui.cli.CommandExecutor;
+import com.joker.goose.game.gui.cli.exception.CommandNotFoundException;
+import com.joker.goose.game.gui.cli.exception.GameStoppedException;
 
 import java.util.Scanner;
 
@@ -17,9 +17,9 @@ public class App {
         GooseGame gooseGame = new GooseGame(new Board());
         gooseGame.addGameListener(new CLIGameListener(System.out));
 
-        Die die = new Die(6);
+        Dice dice = new Dice(6);
 
-        CommandExecutor commandExecutor = new CommandExecutor(gooseGame, die, System.out);
+        CommandExecutor commandExecutor = new CommandExecutor(gooseGame, dice, System.out);
 
         try (Scanner scanner = new Scanner(System.in)) {
             boolean continueGame = true;

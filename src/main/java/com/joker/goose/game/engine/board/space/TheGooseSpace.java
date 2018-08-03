@@ -1,10 +1,10 @@
-package com.joker.game.board.space;
+package com.joker.goose.game.engine.board.space;
 
 import java.util.function.Function;
 
-public class GooseSpace extends DefaultSpace {
+public class TheGooseSpace extends DefaultSpace {
 
-    public GooseSpace(String name, Integer index) {
+    public TheGooseSpace(String name, Integer index) {
         super(name, index);
     }
 

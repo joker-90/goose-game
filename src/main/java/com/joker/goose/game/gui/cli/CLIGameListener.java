@@ -1,7 +1,7 @@
-package com.joker.command;
+package com.joker.goose.game.gui.cli;
 
-import com.joker.game.GameListener;
-import com.joker.game.board.space.Space;
+import com.joker.goose.game.engine.GameListener;
+import com.joker.goose.game.engine.board.space.Space;
 
 import java.io.PrintStream;
 

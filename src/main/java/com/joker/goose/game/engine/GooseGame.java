@@ -1,9 +1,9 @@
-package com.joker.game;
+package com.joker.goose.game.engine;
 
-import com.joker.game.board.Board;
-import com.joker.game.board.space.Space;
-import com.joker.game.exception.PlayerAlreadyExistsException;
-import com.joker.game.exception.PlayerNotFoundException;
+import com.joker.goose.game.engine.board.Board;
+import com.joker.goose.game.engine.board.space.Space;
+import com.joker.goose.game.engine.exception.PlayerAlreadyExistsException;
+import com.joker.goose.game.engine.exception.PlayerNotFoundException;
 
 import java.util.*;
 
@@ -37,7 +37,7 @@ public class GooseGame {
                 .mapToInt(Integer::intValue)
                 .sum();
 
-        int newSpaceIndex = actualSpaceIndex + rollsSum;
+        Integer newSpaceIndex = actualSpaceIndex + rollsSum;
 
         Space actualSpace = board.getSpace(actualSpaceIndex);
         notifyAllOnPlayerMoved(playerName, actualSpace, board.getSpace(Math.min(newSpaceIndex, FINAL_SPACE)));
@@ -47,15 +47,17 @@ public class GooseGame {
         players.put(playerName, newSpaceIndex);
     }
 
-    private int evaluateSpaceRule(String playerName, Integer rollsSum, int newSpaceIndex) {
-        if (newSpaceIndex > FINAL_SPACE) {
-            newSpaceIndex = 2 * FINAL_SPACE - newSpaceIndex;
-            notifyAllOnBouncedPlayer(playerName, board.getSpace(newSpaceIndex));
-        } else if (newSpaceIndex == FINAL_SPACE) {
+    private Integer evaluateSpaceRule(String playerName, Integer rollsSum, Integer newSpaceIndex) {
+        Integer evaluatedRule = newSpaceIndex;
+
+        if (evaluatedRule > FINAL_SPACE) {
+            evaluatedRule = 2 * FINAL_SPACE - evaluatedRule;
+            notifyAllOnBouncedPlayer(playerName, board.getSpace(evaluatedRule));
+        } else if (evaluatedRule == FINAL_SPACE) {
             notifyAllOnPlayerWin(playerName);
         }
 
-        Integer evaluatedRule = board.getSpace(newSpaceIndex).getSpaceRule().apply(rollsSum);
+        evaluatedRule = board.getSpace(evaluatedRule).getSpaceRule().apply(rollsSum);
         if (!evaluatedRule.equals(newSpaceIndex)) {
             notifyAllOnPlayerJump(playerName, board.getSpace(evaluatedRule));
             return evaluateSpaceRule(playerName, rollsSum, evaluatedRule);

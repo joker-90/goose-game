@@ -1,6 +1,6 @@
-package com.joker.command;
+package com.joker.goose.game.gui.cli;
 
-import com.joker.command.exception.CommandNotFoundException;
+import com.joker.goose.game.gui.cli.exception.CommandNotFoundException;
 
 import java.util.Arrays;
 import java.util.Collections;

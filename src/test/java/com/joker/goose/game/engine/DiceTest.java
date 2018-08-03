@@ -1,4 +1,4 @@
-package com.joker.game;
+package com.joker.goose.game.engine;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -6,18 +6,18 @@ import org.junit.Test;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
-public class DieTest {
+public class DiceTest {
 
-    private Die die;
+    private Dice dice;
 
     @Before
     public void setUp() {
-        die = new Die(6);
+        dice = new Dice(6);
     }
 
     @Test
     public void rollReturnIntegerBetweenOneAndSix() {
-        Integer result = die.roll();
+        Integer result = dice.roll();
 
         assertThat(result, is(both(greaterThanOrEqualTo(1)).and(lessThanOrEqualTo(6))));
     }
